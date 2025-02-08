@@ -154,112 +154,87 @@
     </div>
 
     <script>
-        let exercises = {
-            Monday: [],
-            Tuesday: [],
-            Wednesday: [
-                { name: 'Jumping Jacks', duration: '00:30', completed: false },
-                { name: 'High Knees', duration: '00:20', completed: false },
-                { name: 'Planks', duration: '02:00', completed: false }
-            ],
-            Thursday: [],
-            Friday: [],
-            Saturday: [],
-            Sunday: []
-        };
-
-        let selectedDay = 'Wednesday';
-
-        // Initialize the app
+        let selectedDay = 'Monday';
+    
         document.addEventListener('DOMContentLoaded', () => {
-            loadFromLocalStorage();
-            renderExercises();
             setupDayButtons();
+            fetchExercises();
         });
-
-        // Set up day button click handlers
+    
         function setupDayButtons() {
             document.querySelectorAll('.day-button').forEach(button => {
                 button.addEventListener('click', () => {
                     document.querySelectorAll('.day-button').forEach(btn => btn.classList.remove('active'));
                     button.classList.add('active');
                     selectedDay = button.dataset.day;
-                    renderExercises();
+                    fetchExercises();
                 });
             });
         }
-
-        // Render exercises for selected day
-        function renderExercises() {
+    
+        function fetchExercises() {
+            fetch(`http://localhost:5000/exercises/${selectedDay}`)
+                .then(response => response.json())
+                .then(data => renderExercises(data))
+                .catch(error => console.error('Error fetching exercises:', error));
+        }
+    
+        function renderExercises(exercises) {
             const container = document.getElementById('exercisesList');
             container.innerHTML = '';
-
-            exercises[selectedDay].forEach((exercise, index) => {
+    
+            exercises.forEach((exercise) => {
                 const exerciseElement = document.createElement('div');
                 exerciseElement.className = 'exercise-item';
                 exerciseElement.innerHTML = `
-                    <input type="checkbox" class="exercise-checkbox" 
-                           ${exercise.completed ? 'checked' : ''} 
-                           onchange="toggleExercise(${index})">
-                    <span class="exercise-name ${exercise.completed ? 'completed' : ''}">
-                        ${exercise.name}
-                    </span>
+                    <input type="checkbox" class="exercise-checkbox" ${exercise.completed ? 'checked' : ''} onchange="toggleExercise('${exercise._id}')">
+                    <span class="exercise-name ${exercise.completed ? 'completed' : ''}">${exercise.name}</span>
                     <span class="exercise-duration">${exercise.duration}</span>
-                    <button class="delete-button" onclick="deleteExercise(${index})">Delete</button>
+                    <button class="delete-button" onclick="deleteExercise('${exercise._id}')">Delete</button>
                 `;
                 container.appendChild(exerciseElement);
             });
         }
-
-        // Add new exercise
+    
         function addExercise() {
             const nameInput = document.getElementById('exerciseName');
             const durationInput = document.getElementById('exerciseDuration');
-            
+    
             const name = nameInput.value.trim();
             const duration = durationInput.value;
-
+    
             if (name) {
-                exercises[selectedDay].push({
-                    name: name,
-                    duration: duration,
-                    completed: false
-                });
-                
-                nameInput.value = '';
-                durationInput.value = '00:00';
-                
-                saveToLocalStorage();
-                renderExercises();
+                fetch('http://localhost:5000/exercises', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ day: selectedDay, name, duration })
+                })
+                .then(response => response.json())
+                .then(() => {
+                    nameInput.value = '';
+                    durationInput.value = '00:00';
+                    fetchExercises();
+                })
+                .catch(error => console.error('Error adding exercise:', error));
             }
         }
-
-        // Toggle exercise completion
-        function toggleExercise(index) {
-            exercises[selectedDay][index].completed = !exercises[selectedDay][index].completed;
-            saveToLocalStorage();
-            renderExercises();
+    
+        function toggleExercise(id) {
+            fetch(`http://localhost:5000/exercises/${id}`, {
+                method: 'PATCH'
+            })
+            .then(() => fetchExercises())
+            .catch(error => console.error('Error toggling exercise:', error));
         }
-
-        // Delete exercise
-        function deleteExercise(index) {
-            exercises[selectedDay].splice(index, 1);
-            saveToLocalStorage();
-            renderExercises();
-        }
-
-        // Save to localStorage
-        function saveToLocalStorage() {
-            localStorage.setItem('workoutExercises', JSON.stringify(exercises));
-        }
-
-        // Load from localStorage
-        function loadFromLocalStorage() {
-            const saved = localStorage.getItem('workoutExercises');
-            if (saved) {
-                exercises = JSON.parse(saved);
-            }
+    
+        function deleteExercise(id) {
+            fetch(`http://localhost:5000/exercises/${id}`, {
+                method: 'DELETE'
+            })
+            .then(() => fetchExercises())
+            .catch(error => console.error('Error deleting exercise:', error));
         }
     </script>
+    
 </body>
 </html>
