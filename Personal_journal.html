@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmpowerHer - Personal Journal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        :root {
+            --primary-color: #090738;
+            --secondary-color: #ec4899;
+            --danger-color: #ef4444;
+            --text-color: #374151;
+            --bg-color: #f3e8ff;
+        }
+
+        body {
+            background: linear-gradient(to bottom, var(--bg-color), #ffffff);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .header nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-ghost { background-color: transparent; color: white; }
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-secondary { background-color: var(--secondary-color); color: white; }
+        .btn-danger { background-color: var(--danger-color); color: white; }
+
+        .note-card { transition: transform 0.2s ease; }
+        .note-card:hover { transform: scale(1.02); }
+
+        #emptyMessage { font-size: 2.5rem; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <header class="bg-[#090738] text-white py-4 px-6 flex justify-between items-center">
+        <h1 class="text-2xl font-bold">EmpowerHer - Personal Journal</h1>
+        <button id="addNoteBtn" class="btn btn-secondary">New Note</button>
+    </header>
+    
+    <main class="container mx-auto px-4 py-8" id="mainContent">
+        <p id="emptyMessage" class="text-center text-lg text-gray-600">Start journaling your way through challenges!</p>
+        <div id="notesContainer" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
+    </main>
+
+    <div id="noteModal" class="hidden fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+        <div class="bg-white p-6 rounded-lg w-96">
+            <h2 class="text-lg font-bold mb-2">New Note</h2>
+            <input type="text" id="noteTitle" placeholder="Title" class="w-full p-2 border rounded mb-2">
+            <textarea id="noteContent" placeholder="Write your note here..." class="w-full p-2 border rounded mb-2"></textarea>
+            <button id="uploadLocal" class="btn btn-primary w-full mb-2">Choose File</button>
+            <input type="file" id="noteImage" class="hidden">
+            <img id="imagePreview" class="rounded hidden">
+            <button id="deleteImageBtn" class="btn btn-danger mt-2 hidden">Delete Image</button>
+            <div class="flex justify-end mt-4">
+                <button id="closeModal" class="btn btn-ghost mr-2">Cancel</button>
+                <button id="saveNote" class="btn btn-primary">Save Note</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let editingNote = null;
+    
+        document.getElementById("addNoteBtn").addEventListener("click", () => {
+            document.getElementById("noteModal").classList.remove("hidden");
+            document.getElementById("noteTitle").value = "";
+            document.getElementById("noteContent").value = "";
+            document.getElementById("noteImage").value = "";
+            document.getElementById("imagePreview").style.display = "none";
+            document.getElementById("deleteImageBtn").classList.add("hidden");
+            editingNote = null;
+        });
+
+        document.getElementById("closeModal").addEventListener("click", () => {
+            document.getElementById("noteModal").classList.add("hidden");
+        });
+
+        document.getElementById("uploadLocal").addEventListener("click", () => {
+            document.getElementById("noteImage").click();
+        });
+
+        document.getElementById("noteImage").addEventListener("change", (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("imagePreview").src = e.target.result;
+                    document.getElementById("imagePreview").style.display = "block";
+                    document.getElementById("deleteImageBtn").classList.remove("hidden");
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById("deleteImageBtn").addEventListener("click", () => {
+            document.getElementById("imagePreview").src = "";
+            document.getElementById("imagePreview").style.display = "none";
+            document.getElementById("deleteImageBtn").classList.add("hidden");
+        });
+
+        document.getElementById("saveNote").addEventListener("click", () => {
+            const title = document.getElementById("noteTitle").value;
+            const content = document.getElementById("noteContent").value;
+            const image = document.getElementById("imagePreview").src;
+            const notesContainer = document.getElementById("notesContainer");
+            const emptyMessage = document.getElementById("emptyMessage");
+
+            if (!title.trim() || !content.trim()) {
+                alert("Title and content cannot be empty.");
+                return;
+            }
+
+            if (notesContainer.children.length === 0) {
+                emptyMessage.classList.add("hidden");
+            }
+
+            if (editingNote) {
+                editingNote.querySelector(".note-title").textContent = title;
+                editingNote.querySelector(".note-content").textContent = content;
+                const imgElement = editingNote.querySelector(".note-image");
+                if (image) {
+                    imgElement.src = image;
+                    imgElement.style.display = "block";
+                } else {
+                    imgElement.style.display = "none";
+                }
+                editingNote = null;
+            } else {
+                const noteDiv = document.createElement("div");
+                noteDiv.classList.add("note-card", "bg-white", "p-4", "rounded-lg", "shadow-md", "relative");
+
+                noteDiv.innerHTML = `
+                    <h3 class='note-title text-lg font-bold mb-2'>${title}</h3>
+                    <p class='note-content'>${content}</p>
+                    ${image ? `<img src='${image}' class='note-image rounded mt-2' />` : ""}
+                    <button class='btn btn-primary mt-2' onclick='editNote(this)'>Edit</button>
+                    <button class='btn btn-danger mt-2 ml-2' onclick='deleteNote(this)'>Delete</button>
+                `;
+
+                notesContainer.appendChild(noteDiv);
+            }
+
+            document.getElementById("noteModal").classList.add("hidden");
+        });
+
+        function editNote(button) {
+            const noteDiv = button.parentElement;
+            editingNote = noteDiv;
+
+            document.getElementById("noteTitle").value = noteDiv.querySelector(".note-title").textContent;
+            document.getElementById("noteContent").value = noteDiv.querySelector(".note-content").textContent;
+            const img = noteDiv.querySelector(".note-image");
+
+            if (img) {
+                document.getElementById("imagePreview").src = img.src;
+                document.getElementById("imagePreview").style.display = "block";
+                document.getElementById("deleteImageBtn").classList.remove("hidden");
+            } else {
+                document.getElementById("imagePreview").style.display = "none";
+                document.getElementById("deleteImageBtn").classList.add("hidden");
+            }
+
+            document.getElementById("noteModal").classList.remove("hidden");
+        }
+
+        function deleteNote(button) {
+            if (confirm("Are you sure you want to delete this note?")) {
+                button.parentElement.remove();
+            }
+        }
+    </script>
+</body>
+</html>
