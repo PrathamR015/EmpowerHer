@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Therapist Appointment System</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --primary-color: #090738;
+    }
+    .navbar {
+      background-color: var(--primary-color);
+      color: white;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="navbar p-4 text-center text-xl font-bold">Therapist Appointment System</div>
+  <div class="container mx-auto p-6 bg-white rounded shadow-md">
+    <h1 class="text-3xl font-bold mb-6 text-center text-blue-600">Therapist Appointment Booking</h1>
+
+    <!-- Specialization Selection -->
+    <div id="specialization-selection" class="mb-6">
+      <h2 class="text-2xl font-semibold text-gray-800">Select a Specialization:</h2>
+      <div class="mt-4">
+        <select id="specialization-dropdown" onchange="handleSpecializationChange()" class="border px-4 py-2 rounded w-full focus:ring-2 focus:ring-blue-500">
+          <option value="" selected disabled>Select Specialization</option>
+          <option value="Psychologist">Psychologist</option>
+          <option value="Physiotherapist">Physiotherapist</option>
+          <option value="OccupationalTherapist">Occupational Therapist</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Doctor Selection -->
+    <div id="doctor-selection" class="mb-6 hidden">
+      <h2 class="text-2xl font-semibold text-gray-800">Available Doctors:</h2>
+      <div id="doctors-list" class="mt-4 space-y-4"></div>
+    </div>
+
+    <!-- Booking Confirmation -->
+    <div id="booking-confirmation" class="mb-6 hidden text-center bg-green-100 p-4 rounded">
+      <h2 class="text-2xl font-semibold text-green-700">Booking Request</h2>
+      <p class="text-green-600 mt-2">Your booking request has been sent successfully!</p>
+    </div>
+
+    <!-- Appointment History -->
+    <div id="appointment-history" class="mb-6 hidden">
+      <h2 class="text-2xl font-semibold text-gray-800">Appointment History</h2>
+      <div class="mt-4">
+        <h3 class="text-xl font-bold text-gray-700">Pending Appointments:</h3>
+        <ul id="pending-appointments" class="list-disc ml-8 mb-4 text-gray-600"></ul>
+
+        <h3 class="text-xl font-bold text-gray-700">Approved Appointments:</h3>
+        <ul id="approved-appointments" class="list-disc ml-8 mb-4 text-gray-600"></ul>
+
+        <h3 class="text-xl font-bold text-gray-700">Attended Appointments:</h3>
+        <ul id="attended-appointments" class="list-disc ml-8 text-gray-600">
+          <li class="mb-4">
+            Dr. Jane Smith - Occupational Therapist - 2025-01-20, 3:00 PM <br>
+            <label for="feedback" class="block text-gray-700 mt-2">Feedback:</label>
+            <input id="feedback" type="text" placeholder="Enter your feedback here" class="border px-4 py-2 rounded w-full mb-2 focus:ring-2 focus:ring-blue-500">
+            <label for="rating" class="block text-gray-700">Rating:</label>
+            <select id="rating" class="border px-4 py-2 rounded w-full focus:ring-2 focus:ring-blue-500">
+              <option value="5">5</option>
+              <option value="4">4</option>
+              <option value="3">3</option>
+              <option value="2">2</option>
+              <option value="1">1</option>
+            </select>
+            <button onclick="submitFeedback()" class="bg-green-500 text-white px-6 py-2 rounded mt-2 hover:bg-green-600 transition">Submit</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const demoDatabase = {
+      Psychologist: [
+        { name: 'Dr. Alice Brown', rating: 4.7 },
+        { name: 'Dr. Bob Green', rating: 4.5 },
+        { name: 'Dr. Charlie White', rating: 4.8 }
+      ],
+      Physiotherapist: [
+        { name: 'Dr. David Blue', rating: 4.6 },
+        { name: 'Dr. Emma Yellow', rating: 4.4 },
+        { name: 'Dr. Frank Black', rating: 4.9 }
+      ],
+      OccupationalTherapist: [
+        { name: 'Dr. George Red', rating: 4.7 },
+        { name: 'Dr. Hannah Pink', rating: 4.6 },
+        { name: 'Dr. Irene Gray', rating: 4.8 }
+      ]
+    };
+
+    const appointmentHistory = {
+      pending: [
+        { doctor: 'Dr. Alice Brown', specialization: 'Psychologist', date: '2025-02-10', time: '10:00 AM' }
+      ],
+      approved: [
+        { doctor: 'Dr. Bob Green', specialization: 'Psychologist', date: '2025-02-08', time: '2:00 PM' }
+      ],
+      attended: [
+        { doctor: 'Dr. Jane Smith', specialization: 'Occupational Therapist', date: '2025-01-20', time: '3:00 PM' }
+      ]
+    };
+
+    function handleSpecializationChange() {
+      const specialization = document.getElementById('specialization-dropdown').value;
+      if (specialization) {
+        const doctorsList = document.getElementById('doctors-list');
+        doctorsList.innerHTML = '';
+
+        demoDatabase[specialization].forEach(doctor => {
+          const doctorCard = document.createElement('div');
+          doctorCard.className = 'border p-4 rounded shadow-sm hover:shadow-md transition';
+          doctorCard.innerHTML = `
+            <p class="font-semibold text-gray-800">${doctor.name} - ${specialization.replace('Therapist', ' Therapist')}</p>
+            <p class="text-gray-600">Rating: ${doctor.rating}</p>
+            <label for="appointment-date" class="block text-gray-700 mt-2">Date:</label>
+            <input type="date" id="appointment-date" class="border px-4 py-2 rounded w-full focus:ring-2 focus:ring-blue-500"> <br>
+            <label for="appointment-time" class="block text-gray-700 mt-2">Time:</label>
+            <input type="time" id="appointment-time" class="border px-4 py-2 rounded w-full focus:ring-2 focus:ring-blue-500"> <br>
+            <button class="bg-green-500 text-white px-6 py-2 rounded mt-2 hover:bg-green-600 transition" onclick="bookAppointment('${doctor.name}', '${specialization}')">Book Appointment</button>
+          `;
+          doctorsList.appendChild(doctorCard);
+        });
+
+        document.getElementById('doctor-selection').classList.remove('hidden');
+      }
+    }
+
+    function bookAppointment(doctor, specialization) {
+      document.getElementById('booking-confirmation').classList.remove('hidden');
+      document.getElementById('appointment-history').classList.remove('hidden');
+      alert(`Request has been sent to ${doctor} (${specialization.replace('Therapist', ' Therapist')})  successfully!`);
+    }
+
+    function submitFeedback() {
+      const feedback = document.getElementById('feedback').value;
+      const rating = document.getElementById('rating').value;
+      alert(`Thank you for your feedback! Rating: ${rating}, Feedback: ${feedback}`);
+    }
+
+    // Initialize history
+    function loadAppointmentHistory() {
+      const pendingList = document.getElementById('pending-appointments');
+      const approvedList = document.getElementById('approved-appointments');
+      const attendedList = document.getElementById('attended-appointments');
+
+      appointmentHistory.pending.forEach(app => {
+        const li = document.createElement('li');
+        li.textContent = `${app.doctor} - ${app.specialization.replace('Therapist', ' Therapist')} - ${app.date}, ${app.time}`;
+        pendingList.appendChild(li);
+      });
+
+      appointmentHistory.approved.forEach(app => {
+        const li = document.createElement('li');
+        li.textContent = `${app.doctor} - ${app.specialization.replace('Therapist', ' Therapist')} - ${app.date}, ${app.time}`;
+        approvedList.appendChild(li);
+      });
+
+      appointmentHistory.attended.forEach(app => {
+        const li = document.createElement('li');
+        li.textContent = `${app.doctor} - ${app.specialization.replace('Therapist', ' Therapist')} - ${app.date}, ${app.time}`;
+        attendedList.appendChild(li);
+      });
+    }
+
+    loadAppointmentHistory();
+  </script>
+</body>
+</html>
