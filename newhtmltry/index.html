@@ -387,7 +387,7 @@
                     <button class="btn btn-ghost">Community</button>
                     <button class="btn btn-ghost">Wellness</button>
                     <button class="btn btn-ghost">About Us</button>
-                    <button class="btn btn-primary">Get Started</button>
+                    <button onclick="window.location.href = './login.html'" class="btn btn-primary">Get Started</button>
                 </div>
             </nav>
         </div>
@@ -433,74 +433,6 @@
     <div class="wellness-platform">
         
 
-        <!-- Emergency Support Section -->
-        <section class="container section">
-            <h2 class="section-title">24/7 Support & Resources</h2>
-            <div class="flex-row">
-                <div class="card">
-                    <div class="card-content">
-                        <div class="icon-title">
-                            <div class="icon-bg">
-                                <i data-lucide="bell"></i>
-                            </div>
-                            <h3>Peer Support Form</h3>
-                        </div>
-                        <p>Connect, share experiences, and find support in our welcoming peer forum community.</p>
-                        <button class="btn btn-danger">Connect With People</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-content">
-                        <div class="icon-title">
-                            <div class="icon-bg">
-                                <i data-lucide="message-circle"></i>
-                            </div>
-                            <h3>AI Support Assistant</h3>
-                        </div>
-                        <p>Get immediate support and guidance from our AI-powered mental health assistant.</p>
-                        <button class="btn btn-primary">Chat with AI Assistant</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Wellness Journey Section -->
-        
-        <section id="features" class="container section bg-white">
-            <h2 class="section-title">Your Complete Wellness Journey</h2>
-            <div class="grid-4">
-                <a href="meditation.html" class="card wellness-card">
-                    <h2>Meditation</h2>
-                    <img src="MED.png" alt="Meditation" class="wellness-card-image" width="200px" height="200px">
-                    <div class="card-content wellness-card-content">
-                        <h4>Guided sessions for stress relief and inner peace</h4>
-                    </div>
-                </a>
-                <a href="exerscise.png" class="card wellness-card">
-                    <h2>Workout Planner</h2>
-                    <img src="exerscise.png" alt="Exercise & Yoga" class="wellness-card-image" width="200px" height="200px">
-                    <div class="card-content wellness-card-content">
-                        <h4>Customized fitness routines for body and mind</h4>
-                    </div>
-                </a>
-                <a href="period-tracker.html" class="card wellness-card">
-                    <h2>Period Tracker</h2>
-                    <img src="period_tracker.png" alt="Period Tracker" class="wellness-card-image" width="200px" height="200px">
-                    <div class="card-content wellness-card-content">
-                        <h4>Monitor cycles and get personalized insights</h4>
-                    </div>
-                </a>
-                <a href="journal.html" class="card wellness-card">
-                    <h2>Personal Journal</h2>
-                    <img src="journal.png" alt="Personal Journal" class="wellness-card-image" width="200px" height="200px">
-                    <div class="card-content wellness-card-content">
-                        <h4>Document your journey and emotions</h4>
-                    </div>
-                </a>
-            </div>
-        </section>
-        
-                        
         <!-- Wellness Dashboard -->
         <section class="container section">
             <div class="card">
@@ -527,10 +459,10 @@
                         <div>
                             <h3>Mood Tracking</h3>
                             <div class="mood-tracker">
-                                <span class="emoji">😊</span>
-                                <span class="emoji">😐</span>
-                                <span class="emoji">😄</span>
-                                <span class="emoji">😔</span>
+                                <span onclick="alert('Glad to see you smiling 😊')" class="emoji">😊</span>
+                                <span onclick="alert('We hope this will change in 5 mins 😄')" class="emoji">😐</span>
+                                <span onclick="alert('Keep Laughing... Good for health 😊')" class="emoji">😄</span>
+                                <span onclick="alert('We are here to uplift your mood 😄')" class="emoji">😔</span>
                             </div>
                         </div>
                         <div>
@@ -544,6 +476,44 @@
                 </div>
             </div>
         </section>
+        <!-- Wellness Journey Section -->
+        
+        <section id="features" class="container section bg-white">
+            <h2 class="section-title">Your Complete Wellness Journey</h2>
+            <div class="grid-4">
+                <a href="meditation.html" class="card wellness-card">
+                    <h2>Meditation</h2>
+                    <img src="MED.png" alt="Meditation" class="wellness-card-image" width="200px" height="200px">
+                    <div class="card-content wellness-card-content">
+                        <h4>Guided sessions for stress relief and inner peace</h4>
+                    </div>
+                </a>
+                <a href="./workout_planner.html" class="card wellness-card">
+                    <h2>Workout Planner</h2>
+                    <img src="exerscise.png" alt="Exercise & Yoga" class="wellness-card-image" width="200px" height="200px">
+                    <div class="card-content wellness-card-content">
+                        <h4>Customized fitness routines for body and mind</h4>
+                    </div>
+                </a>
+                <a href="./Period_tracker.html" class="card wellness-card">
+                    <h2>Period Tracker</h2>
+                    <img src="period_tracker.png" alt="Period Tracker" class="wellness-card-image" width="200px" height="200px">
+                    <div class="card-content wellness-card-content">
+                        <h4>Monitor cycles and get personalized insights</h4>
+                    </div>
+                </a>
+                <a href="journal.html" class="card wellness-card">
+                    <h2>Personal Journal</h2>
+                    <img src="journal.png" alt="Personal Journal" class="wellness-card-image" width="200px" height="200px">
+                    <div class="card-content wellness-card-content">
+                        <h4>Document your journey and emotions</h4>
+                    </div>
+                </a>
+            </div>
+        </section>
+        
+                        
+        
         <!-- Resources Section -->
         <section class="container section">
             <h2 class="section-title">Mental Wellness Resources</h2>
