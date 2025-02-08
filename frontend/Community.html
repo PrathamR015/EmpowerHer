@@ -4,200 +4,488 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Peer Support Forum</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 600px; margin: auto; text-align: center; }
-        input, textarea, button { width: 100%; margin-top: 10px; padding: 10px; }
-        .post { border: 1px solid #ddd; padding: 10px; margin-top: 10px; text-align: left; position: relative; }
-        .comment { font-size: 0.9em; margin-left: 20px; }
-        .hidden { display: none; }
-        .auth-container { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
-        .popup { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-                 background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.2); text-align: left; }
-        .popup input { display: block; width: 95%; margin-bottom: 10px; }
-        .popup button { width: 100%; }
-        .delete-btn { position: absolute; top: 10px; right: 10px; background: red; color: white; border: none; padding: 5px; cursor: pointer; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        body {
+            background-color: #faf5ff;
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            background-color: #090738;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 4px 0;
+            justify-content: left;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1000px;
+            margin: 10px;
+            display: flex;
+            justify-content: left;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-logo {
+            color: #ec4899;
+            font-size: 24px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #8b5cf6;
+        }
+
+        .nav-link.active {
+            color: #8b5cf6;
+            font-weight: 500;
+        }
+
+        .nav-icons {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+        }
+
+        .nav-icon {
+            color: #666;
+            font-size: 20px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .nav-icon:hover {
+            color: #8b5cf6;
+        }
+
+        .nav-profile {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #374151;
+            cursor: pointer;
+        }
+
+        /* Existing styles */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+        }
+
+        .header h1 {
+            color: #8b5cf6;
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 24px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #8b5cf6;
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #7c3aed;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: #8b5cf6;
+            border: 2px solid #8b5cf6;
+        }
+
+        .btn-outline:hover {
+            background-color: #faf5ff;
+        }
+
+        .search-section {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .search-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-container i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 12px 12px 40px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .sort-select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        .create-post {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 32px;
+        }
+
+        .create-post h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 16px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        textarea.input-field {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 24px;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            padding: 12px 8px;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: #8b5cf6;
+            border-bottom-color: #8b5cf6;
+        }
+
+        .post {
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #e5e7eb;
+        }
+
+        .post-meta {
+            flex: 1;
+        }
+
+        .post-meta h3 {
+            margin-bottom: 4px;
+        }
+
+        .post-meta p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .category-tag {
+            background-color: #fce7f3;
+            color: #db2777;
+            padding: 4px 12px;
+            border-radius: 999px;
+            font-size: 14px;
+        }
+
+        .post-content {
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .post-actions {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            color: #666;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .votes {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .comment-section {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #ddd;
+        }
+
+        .comment {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .add-comment {
+            display: flex;
+            gap: 16px;
+        }
+
+        .add-comment textarea {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
-    <h1>Work in progress...</h1>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <img src="./img/Logo.jpg" alt="" width="80px" height="80px" >
+            <a href="#" class="nav-logo">EmpowerHer</a>
+        </div>
+    </nav>
+
     <div class="container">
-        <h1>Peer Support Forum</h1>
-        
-        <!-- AUTH BUTTONS -->
-        <div class="auth-container">
-            <button onclick="showPopup('register-popup')">Register</button>
-            <button onclick="showPopup('login-popup')">Login</button>
-            <button onclick="logout()" class="hidden" id="logout-btn">Logout</button>
+        <header class="header">
+            <h1>Peer Support Forum</h1>
+        </header>
+
+        <div class="search-section">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" placeholder="Search posts...">
+            </div>
+            <select class="sort-select">
+                <option>Sort by</option>
+                <option>Most Recent</option>
+                <option>Most Popular</option>
+            </select>
         </div>
 
-        <!-- LOGIN FORM POPUP -->
-        <div id="login-popup" class="popup">
-            <h2>Login</h2>
-            <input type="email" id="login-email" placeholder="Email">
-            <input type="password" id="login-password" placeholder="Password">
-            <button onclick="login()">Login</button>
-            <button onclick="hidePopup('login-popup')">Close</button>
+        <div class="create-post">
+            <h2>Create a Post</h2>
+            <input type="text" class="input-field" placeholder="Post title">
+            <select class="input-field">
+                <option value="">Select category</option>
+                <option value="wellness">Wellness</option>
+                <option value="mental-health">Mental Health</option>
+                <option value="relationships">Relationships</option>
+            </select>
+            <textarea class="input-field" placeholder="Share your thoughts..."></textarea>
+            <button class="btn btn-primary" style="width: 100%;">Create Post</button>
         </div>
 
-        <!-- REGISTER FORM POPUP -->
-        <div id="register-popup" class="popup">
-            <h2>Register</h2>
-            <input type="text" id="register-username" placeholder="Username">
-            <input type="email" id="register-email" placeholder="Email">
-            <input type="password" id="register-password" placeholder="Password">
-            <button onclick="register()">Register</button>
-            <button onclick="hidePopup('register-popup')">Close</button>
+        <div class="tabs">
+            <div class="tab active">All Posts</div>
+            <div class="tab">Trending</div>
+            <div class="tab">My Posts</div>
+            <div class="tab">Saved</div>
         </div>
 
-        <!-- CREATE POST FORM -->
-        <h2>Create a Post</h2>
-        <input type="text" id="title" placeholder="Title">
-        <textarea id="content" placeholder="Content"></textarea>
-        <button onclick="createPost()">Submit</button>
+        <div class="post">
+            <div class="post-header">
+                <div class="avatar"></div>
+                <div class="post-meta">
+                    <h3>Meditation Journey</h3>
+                    <p>Posted by Sarah • 2 hours ago</p>
+                </div>
+                <span class="category-tag">Wellness</span>
+            </div>
+            <div class="post-content">
+                I've been practicing meditation for the past month, and I wanted to share my experience...
+            </div>
+            <div class="post-actions">
+                <div class="votes">
+                    <button class="action-btn"><i class="fas fa-chevron-up"></i></button>
+                    <span>24</span>
+                    <button class="action-btn"><i class="fas fa-chevron-down"></i></button>
+                </div>
+                <button class="action-btn">
+                    <i class="fas fa-comment"></i>
+                    <span>12 Comments</span>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-share"></i>
+                    <span>Share</span>
+                </button>
+                <button class="action-btn">
+                    <i class="fas fa-bookmark"></i>
+                    <span>Save</span>
+                </button>
+                <button class="action-btn" style="margin-left: auto;">
+                    <i class="fas fa-ellipsis-h"></i>
+                </button>
+            </div>
 
-        <h2>Posts</h2>
-        <div id="posts"></div>
+            <div class="comment-section">
+                <div class="comment">
+                    <div class="avatar"></div>
+                    <div class="comment-content">
+                        <p><strong>Jane Doe</strong></p>
+                        <p>Thank you for sharing! This is really inspiring.</p>
+                        <div class="comment-actions">
+                            <button class="action-btn">Reply</button>
+                            <span>2h ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="add-comment">
+                    <div class="avatar"></div>
+                    <div style="flex: 1;">
+                        <textarea class="input-field" placeholder="Add a comment..."></textarea>
+                        <button class="btn btn-primary" style="margin-top: 8px;">Post Comment</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000';
-
-        function showPopup(id) {
-            document.getElementById(id).style.display = 'block';
-        }
-
-        function hidePopup(id) {
-            document.getElementById(id).style.display = 'none';
-        }
-
-        async function register() {
-            const username = document.getElementById('register-username').value;
-            const email = document.getElementById('register-email').value;
-            const password = document.getElementById('register-password').value;
-
-            const res = await fetch(`${API_URL}/register`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ username, email, password })
+        // Tab switching functionality
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
             });
+        });
 
-            const data = await res.json();
-            alert(data.message);
-            hidePopup('register-popup');
-        }
-
-        async function login() {
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-
-            const res = await fetch(`${API_URL}/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
+        // Navigation link functionality
+        const navLinks = document.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
             });
+        });
 
-            const data = await res.json();
-            
-            if (data.token) {
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('userId', data.userId); // Store user ID
-                alert('Login Successful');
-                document.getElementById('logout-btn').classList.remove('hidden');
-                hidePopup('login-popup');
-                fetchPosts();
-            } else {
-                alert('Invalid Credentials');
-            }
-        }
+        // Notification and message icon click handlers
+        const notificationIcon = document.querySelector('.fa-bell');
+        const messageIcon = document.querySelector('.fa-envelope');
+        
+        notificationIcon.addEventListener('click', () => {
+            alert('Notifications clicked');
+        });
+        
+        messageIcon.addEventListener('click', () => {
+            alert('Messages clicked');
+        });
 
-        function logout() {
-            localStorage.removeItem('token');
-            localStorage.removeItem('userId');
-            alert('Logged Out');
-            document.getElementById('logout-btn').classList.add('hidden');
-            fetchPosts();
-        }
+        // Vote functionality
+        let voteCount = 24;
+        const upvoteBtn = document.querySelector('.fa-chevron-up').parentElement;
+        const downvoteBtn = document.querySelector('.fa-chevron-down').parentElement;
+        const voteDisplay = document.querySelector('.votes span');
 
-        async function fetchPosts() {
-            const res = await fetch(`${API_URL}/posts`);
-            const posts = await res.json();
-            const currentUserId = localStorage.getItem('userId');
+        upvoteBtn.addEventListener('click', () => {
+            voteCount++;
+            voteDisplay.textContent = voteCount;
+        });
 
-            document.getElementById('posts').innerHTML = posts.map(post => `
-                <div class="post">
-                    <h3>${post.title}</h3>
-                    <p>${post.content}</p>
-                    <p><small>By: ${post.author.username}</small></p>
-                    
-                    ${currentUserId === post.author._id ? `<button class="delete-btn" onclick="deletePost('${post._id}')">Delete</button>` : ''}
-
-                    <button onclick="addComment('${post._id}')">Add Comment</button>
-                    <div class="comments">${post.comments.map(c => `<p class='comment'>${c.body}</p>`).join('')}</div>
-                </div>`).join('');
-        }
-
-        async function createPost() {
-            const title = document.getElementById('title').value;
-            const content = document.getElementById('content').value;
-            const token = localStorage.getItem('token');
-
-            if (!token) {
-                alert("Please login first!");
-                return;
-            }
-
-            const res = await fetch(`${API_URL}/posts`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': token },
-                body: JSON.stringify({ title, content })
-            });
-
-            const data = await res.json();
-            alert('Post Created!');
-            fetchPosts();
-        }
-
-        async function addComment(postId) {
-            const comment = prompt('Enter your comment');
-            const token = localStorage.getItem('token');
-
-            if (!token) {
-                alert("Please login first!");
-                return;
-            }
-
-            if (!comment) return;
-
-            await fetch(`${API_URL}/posts/${postId}/comments`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': token },
-                body: JSON.stringify({ body: comment })
-            });
-
-            fetchPosts();
-        }
-
-        async function deletePost(postId) {
-            const token = localStorage.getItem('token');
-
-            if (!token) {
-                alert("Please login first!");
-                return;
-            }
-
-            if (confirm("Are you sure you want to delete this post?")) {
-                await fetch(`${API_URL}/posts/${postId}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': token }
-                });
-
-                alert("Post Deleted");
-                fetchPosts();
-            }
-        }
-
-        fetchPosts();
-    </script>
-</body>
-</html>
+        downvoteBtn.addEventListener('click', () => {
+            voteCount--;
+            voteDisplay.textContent = voteCount;
+        });
