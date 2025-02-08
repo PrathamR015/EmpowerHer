@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmpowerHer - Task Manager</title>
+    <style>
+        :root {
+            --primary-color: #090738;
+            --secondary-color: #5c4b7f;
+            --background-color: #f3f0f8;
+            --text-color: #2c3e50;
+            --priority-high: #e74c3c;
+            --priority-medium: #f39c12;
+            --priority-low: #27ae60;
+            --navbar-text: #fff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--navbar-text);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            font-size: 1.5rem;
+        }
+
+        .navbar ul {
+            list-style: none;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .navbar ul li {
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.3s;
+        }
+
+        .navbar ul li:hover {
+            color: var(--secondary-color);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--primary-color);
+        }
+
+        .controls-container {
+            display: grid;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .task-input-container {
+            display: grid;
+            grid-template-columns: 1fr auto auto auto;
+            gap: 1rem;
+        }
+
+        .task-input,
+        .date-input,
+        .priority-select,
+        .category-select {
+            padding: 0.8rem;
+            border: 2px solid var(--primary-color);
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .add-btn {
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .add-btn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .tasks-container {
+            background: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .task-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto auto;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .priority-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .priority-high {
+            background-color: var(--priority-high);
+        }
+
+        .priority-medium {
+            background-color: var(--priority-medium);
+        }
+
+        .priority-low {
+            background-color: var(--priority-low);
+        }
+
+        .task-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .task-text {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .task-meta {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .task-category {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            color: white;
+            background-color: var(--secondary-color);
+        }
+
+        .due-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .edit-btn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .save-btn {
+            background-color: #2ecc71;
+            color: white;
+            display: none;
+        }
+
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .completed .task-text {
+            text-decoration: line-through;
+            color: #888;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>EmpowerHer</h1>
+        
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Task Manager</h1>
+            <p>Organize your tasks efficiently</p>
+        </div>
+
+        <div class="controls-container">
+            <div class="task-input-container">
+                <input type="text" class="task-input" placeholder="Add a new task...">
+                <input type="date" class="date-input">
+                <select class="priority-select">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+                <select class="category-select">
+                    <option value="work">Work</option>
+                    <option value="personal">Personal</option>
+                    <option value="health">Health</option>
+                    <option value="wellness">Wellness</option>
+                </select>
+                <button class="add-btn">Add Task</button>
+            </div>
+        </div>
+
+        <div class="tasks-container"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tasksContainer = document.querySelector('.tasks-container');
+            const addBtn = document.querySelector('.add-btn');
+            const taskInput = document.querySelector('.task-input');
+            const dateInput = document.querySelector('.date-input');
+            const prioritySelect = document.querySelector('.priority-select');
+            const categorySelect = document.querySelector('.category-select');
+
+            function createTaskElement(task) {
+                const taskItem = document.createElement('div');
+                taskItem.className = 'task-item';
+                taskItem.innerHTML = `
+                    <div class="priority-indicator priority-${task.priority}"></div>
+                    <div class="task-details">
+                        <div class="task-text">${task.text}</div>
+                        <div class="task-meta">
+                            <span class="task-category">${task.category}</span>
+                            <span class="due-date">Due: ${task.dueDate}</span>
+                        </div>
+                    </div>
+                    <button class="action-btn edit-btn">Edit</button>
+                    <button class="action-btn save-btn">Save</button>
+                    <button class="action-btn delete-btn">Delete</button>
+                `;
+
+                taskItem.querySelector('.edit-btn').addEventListener('click', () => {
+                    taskItem.querySelector('.task-text').contentEditable = true;
+                    taskItem.querySelector('.save-btn').style.display = 'inline-block';
+                });
+
+                taskItem.querySelector('.save-btn').addEventListener('click', () => {
+                    taskItem.querySelector('.task-text').contentEditable = false;
+                    taskItem.querySelector('.save-btn').style.display = 'none';
+                });
+
+                taskItem.querySelector('.delete-btn').addEventListener('click', () => {
+                    taskItem.remove();
+                });
+
+                return taskItem;
+            }
+
+            addBtn.addEventListener('click', () => {
+                const task = {
+                    text: taskInput.value,
+                    dueDate: dateInput.value,
+                    priority: prioritySelect.value,
+                    category: categorySelect.value,
+                };
+                tasksContainer.appendChild(createTaskElement(task));
+            });
+        });
+    </script>
+</body>
+</html>
