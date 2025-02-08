@@ -1,18 +1,19 @@
 # EmpowerHer
 
-Full stack mental wellness website built with HTML, CSS, Javascript, Node.js, Express, and Mongodb.
+EmpowerHer is a full-stack mental wellness platform built with **HTML, CSS, JavaScript, Node.js, Express, and MongoDB**.
 
-Note: The backend is hosted on local server for now
+> **Note:** The backend is currently hosted on a local server.
+
 ## Features
-- Peer Support forum
+- Peer Support Forum
 - Create, update, and delete posts and comments
 - Period Tracker
 - Health Tracker
 - AI Assistance using chatbots
 - Write Journal
-- Create To Do lists
+- Create To-Do Lists
 - Mental Health Awareness
-- Solution Remdies for Mental Health
+- Solution Remedies for Mental Health
 - ... and more to come!
 
 ## Screenshots
@@ -23,57 +24,56 @@ Note: The backend is hosted on local server for now
 </p>
 
 ## Installation
-1. Clone this repository
-
-```
-git clone https://github.com/PrathamR015/EmpowerHer
+### 1. Clone this repository
+```sh
+git clone https://github.com/PrathamR015/EmpowerHer.git
 cd EmpowerHer
 ```
 
-2. Install backend dependencies
-
-```
+### 2. Install backend dependencies
+```sh
 cd backend
 npm install
 ```
 
-3. Install frontend dependencies
-
-```
+### 3. Install frontend dependencies
+```sh
 cd frontend
 npm install
 ```
 
-
-```
-
-5. Configure environment variables. Create a `.env` file in the config folder, and paste the following (filling in your own postgres password and JWT secret)
-```
+### 4. Configure environment variables
+Create a `.env` file in the `config` folder and add the following, replacing with your own values:
+```sh
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/empowerher
 JWT_SECRET=<YOUR_SECRET>
-
-
 ```
 
-6. Create a Mongodb database named 'EmpowerHer'
+### 5. Create a MongoDB database
+Ensure that you have MongoDB installed and create a database named **EmpowerHer**.
 
-7. Run the database migrations
-
-```
+### 6. Run database migrations
+```sh
 cd backend
 npm run db-migrate up
 ```
 
 ## Usage
-1. Start server
-
-```
+### 1. Start the server
+```sh
 cd backend
 node server.js
 ```
 
-2. Start client
-```
+### 2. Start the client
+```sh
 open index.html
 ```
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
