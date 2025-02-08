@@ -9,12 +9,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color:#374151;
+            --primary-color:#090738;
             --light-bg:#f3e8ff;
             --text-color: #333;
             --box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            --steel-blue:#ec4899;
-            --light-purple: #8b5cf6;
         }
 
         body {
@@ -39,7 +37,7 @@
 
         .left-half {
             flex: 1;
-            background: linear-gradient(to bottom, var(--steel-blue), #6495ED);
+            background: var(--primary-color);
             color: white;
             padding: 4rem;
             display: flex;
@@ -51,12 +49,7 @@
         .left-half img {
             max-width: 100%;
             height: auto;
-            display: block;
             margin-bottom: 1rem;
-        }
-
-        .left-half h1, .left-half p {
-            text-align: center;
         }
 
         .right-half {
@@ -68,7 +61,6 @@
         .login-title {
             font-size: 2rem;
             color: var(--primary-color);
-            text-align: left;
             margin-bottom: 2rem;
             font-weight: 600;
         }
@@ -88,15 +80,7 @@
             padding: 1rem;
             border: 1px solid #ddd;
             border-radius: 4px;
-            box-sizing: border-box;
-            transition: border-color 0.2s ease-in-out;
             background-color: var(--light-bg);
-        }
-
-        .form-group input:focus {
-            border-color: var(--primary-color);
-            outline: none;
-            box-shadow: 0 0 5px rgba(123, 104, 238, 0.2);
         }
 
         .btn {
@@ -105,7 +89,6 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
-            transition: background-color 0.3s ease;
             width: 100%;
             background-color: var(--primary-color);
             color: white;
@@ -113,10 +96,6 @@
 
         .btn:hover {
             background-color: #374151;
-        }
-
-        .btn:active {
-            transform: translateY(1px);
         }
 
         .links {
@@ -127,7 +106,6 @@
         .links a {
             color: var(--primary-color);
             text-decoration: none;
-            margin: 0 0.5rem;
         }
 
         .error-message {
@@ -135,30 +113,14 @@
             margin-top: 1rem;
             text-align: center;
         }
-
-        @media (max-width: 768px) {
-            .login-container {
-                flex-direction: column;
-                width: 95%;
-            }
-
-            .left-half, .right-half {
-                padding: 2rem;
-            }
-
-            .left-half h1 {
-                font-size: 2rem;
-            }
-        }
     </style>
 </head>
 <body>
-
     <div class="login-container">
         <div class="left-half">
-            <img src="loginnnn.png" alt="EmpowerHer Logo/Image">
+            <img src="./Logo.jpg" alt="EmpowerHer Logo">
             <h1>Welcome!</h1>
-            <!--<p>Login to access your personalized experience, manage your account, and continue your journey with us.</p>-->
+            <p>Login to access your personalized experience.</p>
         </div>
         <div class="right-half">
             <h2 class="login-title">Login</h2>
@@ -166,51 +128,48 @@
             <form id="loginForm">
                 <div class="form-group">
                     <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" required>
+                    <input type="email" id="login-email" placeholder="Email" required>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="login-password" placeholder="Password" required>
                 </div>
                 <button type="submit" class="btn">Login</button>
-                <div class="links">
-                    <a href="#">Forgot Password?</a>
-                    <span>|</span>
-                    <a href="#">Sign Up</a>
-                </div>
             </form>
+            <div class="links">
+                <a href="#">Forgot Password?</a> | <a href="./Register.html">Sign Up</a>
+            </div>
         </div>
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form from actually submitting
-
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
+        const API_URL = 'http://localhost:5000';
+        
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
             const errorMessage = document.getElementById('error-message');
-
-            // Basic client-side validation (you should add more robust validation)
-            if (email.trim() === "" || password.trim() === "") {
-                errorMessage.textContent = "Please fill in all fields.";
-                return;
+            
+            try {
+                const res = await fetch(`${API_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    localStorage.setItem('token', data.token);
+                    alert('Login Successful');
+                    window.location.href = 'index.html';
+                } else {
+                    errorMessage.textContent = data.message || 'Invalid credentials';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Server error, please try again later';
             }
-
-            // Here you would typically send the data to a server for authentication.
-            // This is a placeholder for that server-side logic.
-            // For now, we'll just simulate a successful login.
-
-            if (email === "test@example.com" && password === "password") {
-              // Redirect or perform actions upon successful login
-                errorMessage.textContent = ""; // Clear any previous error messages
-                alert("Login Successful (Simulated)"); // Replace with your desired action
-                // window.location.href = "dashboard.html"; // Example: redirect to dashboard
-            } else {
-              errorMessage.textContent = "Invalid email or password.";
-            }
-
         });
     </script>
-
 </body>
 </html>
