@@ -1,0 +1,39 @@
+[
+    {
+      "name": "Dr. Aditi Sharma",
+      "specialization": "Clinical Psychologist",
+      "experience": 10,
+      "availability": true
+    },
+    {
+      "name": "Dr. Rohan Mehta",
+      "specialization": "Cognitive Behavioral Therapist",
+      "experience": 8,
+      "availability": true
+    },
+    {
+      "name": "Dr. Neha Kapoor",
+      "specialization": "Trauma and PTSD Specialist",
+      "experience": 12,
+      "availability": false
+    },
+    {
+      "name": "Dr. Arjun Verma",
+      "specialization": "Marriage & Family Therapy",
+      "experience": 7,
+      "availability": true
+    },
+    {
+      "name": "Dr. Pooja Nair",
+      "specialization": "Stress and Anxiety Therapist",
+      "experience": 9,
+      "availability": true
+    },
+    {
+      "name": "Dr. Sameer Rao",
+      "specialization": "Depression & Mood Disorders",
+      "experience": 11,
+      "availability": false
+    }
+  ]
+  
